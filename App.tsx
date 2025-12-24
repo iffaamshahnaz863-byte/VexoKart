@@ -12,6 +12,11 @@ import WishlistPage from './components/pages/WishlistPage';
 import OrderHistoryPage from './components/pages/OrderHistoryPage';
 import LoginPage from './components/pages/LoginPage';
 import SignupPage from './components/pages/SignupPage';
+import AdminLoginPage from './components/pages/AdminLoginPage';
+import AdminDashboardPage from './components/pages/AdminDashboardPage';
+import AdminManageProductsPage from './components/pages/AdminManageProductsPage';
+import AdminManageOrdersPage from './components/pages/AdminManageOrdersPage';
+import AdminManageUsersPage from './components/pages/AdminManageUsersPage';
 
 const PageRenderer: React.FC = () => {
     const { page, pageData } = useApp();
@@ -39,6 +44,16 @@ const PageRenderer: React.FC = () => {
             return <LoginPage />;
         case 'signup':
             return <SignupPage />;
+        case 'adminLogin':
+            return <AdminLoginPage />;
+        case 'adminDashboard':
+            return <AdminDashboardPage />;
+        case 'adminManageProducts':
+            return <AdminManageProductsPage />;
+        case 'adminManageOrders':
+            return <AdminManageOrdersPage />;
+        case 'adminManageUsers':
+            return <AdminManageUsersPage />;
         default:
             return <HomePage />;
     }

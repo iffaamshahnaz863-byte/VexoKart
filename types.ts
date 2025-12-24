@@ -29,6 +29,7 @@ export interface Order {
     items: CartItem[];
     total: number;
     status: 'Delivered' | 'Processing' | 'Cancelled';
+    user?: User;
 }
 
 export interface User {
@@ -36,16 +37,19 @@ export interface User {
     email: string;
 }
 
-export type Page = 'home' | 'productList' | 'productDetail' | 'cart' | 'profile' | 'checkout' | 'orderConfirmation' | 'wishlist' | 'orderHistory' | 'login' | 'signup';
+export type Page = 'home' | 'productList' | 'productDetail' | 'cart' | 'profile' | 'checkout' | 'orderConfirmation' | 'wishlist' | 'orderHistory' | 'login' | 'signup' | 'adminLogin' | 'adminDashboard' | 'adminManageProducts' | 'adminManageOrders' | 'adminManageUsers';
 
 export interface AppContextType {
   page: Page;
   pageData: any;
+  products: Product[];
   selectedProduct: Product | null;
   cart: CartItem[];
   wishlist: Product[];
   orders: Order[];
+  users: User[];
   isAuthenticated: boolean;
+  isAdminAuthenticated: boolean;
   user: User | null;
   navigateTo: (page: Page, data?: any) => void;
   selectProduct: (product: Product) => void;
@@ -58,4 +62,10 @@ export interface AppContextType {
   placeOrder: (cart: CartItem[], total: number) => void;
   login: (name: string, email: string) => void;
   logout: () => void;
+  adminLogin: (email: string, pass: string) => boolean;
+  adminLogout: () => void;
+  updateOrderStatus: (orderId: string, status: Order['status']) => void;
+  addProduct: (product: Omit<Product, 'id' | 'rating' | 'reviewCount'>) => void;
+  updateProduct: (product: Product) => void;
+  deleteProduct: (productId: number) => void;
 }
