@@ -7,6 +7,7 @@ import { ArrowLeftIcon, HeartIcon } from '../../assets/icons';
 const ProductDetailPage: React.FC = () => {
     const { selectedProduct, navigateTo, addToCart, addToWishlist, isProductInWishlist, isAuthenticated } = useApp();
     const [mainImage, setMainImage] = useState(selectedProduct?.images[0] || '');
+    const [addedToCart, setAddedToCart] = useState(false);
 
     if (!selectedProduct) {
         return (
@@ -22,8 +23,18 @@ const ProductDetailPage: React.FC = () => {
             return;
         }
         addToCart(selectedProduct);
-        navigateTo('cart');
-    }
+        setAddedToCart(true);
+        setTimeout(() => setAddedToCart(false), 2000); // Hide message after 2s
+    };
+
+    const handleBuyNow = () => {
+        if (!isAuthenticated) {
+            navigateTo('login');
+            return;
+        }
+        addToCart(selectedProduct);
+        navigateTo('checkout');
+    };
 
     const discount = Math.round(((selectedProduct.originalPrice - selectedProduct.price) / selectedProduct.originalPrice) * 100);
 
@@ -76,13 +87,25 @@ const ProductDetailPage: React.FC = () => {
                 </div>
             </main>
             
+            {addedToCart && (
+                <div className="fixed bottom-24 left-1/2 -translate-x-1/2 bg-gray-800 text-white px-4 py-2 rounded-lg shadow-lg z-30 animate-pulse">
+                    Item added to cart!
+                </div>
+            )}
+
             <div className="fixed bottom-0 left-0 right-0 bg-white shadow-[0_-2px_5px_rgba(0,0,0,0.1)] p-3">
                 <div className="flex space-x-3 max-w-lg mx-auto">
                     <button 
                         onClick={handleAddToCart}
-                        className="w-full bg-gradient-to-r from-blue-500 to-purple-600 text-white font-bold py-3 rounded-lg shadow-lg hover:opacity-90 transition-opacity"
+                        className="w-1/2 bg-gray-200 text-gray-800 font-bold py-3 rounded-lg hover:bg-gray-300 transition-colors"
                     >
                         Add to Cart
+                    </button>
+                    <button 
+                        onClick={handleBuyNow}
+                        className="w-1/2 bg-gradient-to-r from-blue-500 to-purple-600 text-white font-bold py-3 rounded-lg shadow-lg hover:opacity-90 transition-opacity"
+                    >
+                        Buy Now
                     </button>
                 </div>
             </div>

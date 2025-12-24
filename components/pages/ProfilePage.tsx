@@ -13,6 +13,9 @@ const ProfilePage: React.FC = () => {
         { label: 'Manage Addresses', action: () => {} },
         { label: 'Account Settings', action: () => {} },
     ];
+    
+    // For demo purposes, the user 'John Doe' is the admin.
+    const isAdmin = user?.email === 'john.doe@example.com';
 
     return (
         <div className="pb-20 bg-gray-100 min-h-screen">
@@ -53,6 +56,19 @@ const ProfilePage: React.FC = () => {
                                 </button>
                             ))}
                         </div>
+
+                        {isAdmin && (
+                             <div className="mt-4 bg-white rounded-lg shadow-lg">
+                                 <button
+                                     onClick={() => navigateTo('adminLogin')}
+                                     className="w-full text-left flex justify-between items-center p-4"
+                                 >
+                                     <span className="font-semibold text-purple-600">Admin Panel</span>
+                                     <ChevronRightIcon />
+                                 </button>
+                             </div>
+                        )}
+
                         <div className="mt-6">
                             <button
                                 onClick={logout}

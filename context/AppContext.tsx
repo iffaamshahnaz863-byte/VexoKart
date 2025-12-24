@@ -8,12 +8,15 @@ const AppContext = createContext<AppContextType | undefined>(undefined);
 export const AppProvider: React.FC<{ children: ReactNode }> = ({ children }) => {
     const [page, setPage] = useState<Page>('home');
     const [pageData, setPageData] = useState<any>(null);
+    const [products, setProducts] = useState<Product[]>(mockProducts);
     const [selectedProduct, setSelectedProduct] = useState<Product | null>(null);
     const [cart, setCart] = useState<CartItem[]>([]);
     const [wishlist, setWishlist] = useState<Product[]>([]);
     const [orders, setOrders] = useState<Order[]>([]);
     const [isAuthenticated, setIsAuthenticated] = useState(false);
+    const [isAdminAuthenticated, setIsAdminAuthenticated] = useState(false);
     const [user, setUser] = useState<User | null>(null);
+    const [users, setUsers] = useState<User[]>([]);
 
     const navigateTo = useCallback((newPage: Page, data?: any) => {
         setPage(newPage);
@@ -22,9 +25,10 @@ export const AppProvider: React.FC<{ children: ReactNode }> = ({ children }) => 
     }, []);
 
     const login = (name: string, email: string) => {
-        setUser({ name, email });
+        const newUser = { name, email };
+        setUser(newUser);
+        setUsers(prev => [...prev.filter(u => u.email !== email), newUser]);
         setIsAuthenticated(true);
-        // On successful login, go back to profile or home
         navigateTo('profile');
     };
 
@@ -33,7 +37,21 @@ export const AppProvider: React.FC<{ children: ReactNode }> = ({ children }) => 
         setIsAuthenticated(false);
         setCart([]);
         setWishlist([]);
-        setOrders([]);
+        // Keep orders and users
+        navigateTo('home');
+    };
+
+    const adminLogin = (email: string, pass: string): boolean => {
+        if (email === 'admin@vexokart.com' && pass === 'admin123') {
+            setIsAdminAuthenticated(true);
+            navigateTo('adminDashboard');
+            return true;
+        }
+        return false;
+    };
+
+    const adminLogout = () => {
+        setIsAdminAuthenticated(false);
         navigateTo('home');
     };
 
@@ -101,20 +119,47 @@ export const AppProvider: React.FC<{ children: ReactNode }> = ({ children }) => 
             items: orderedItems,
             total,
             status: 'Processing',
+            user: user || undefined,
         };
         setOrders(prev => [newOrder, ...prev]);
         setCart([]);
         navigateTo('orderConfirmation', newOrder);
     };
 
+    const updateOrderStatus = (orderId: string, status: Order['status']) => {
+        setOrders(prevOrders => prevOrders.map(o => o.id === orderId ? { ...o, status } : o));
+    }
+
+    const addProduct = (productData: Omit<Product, 'id' | 'rating' | 'reviewCount'>) => {
+        const newProduct: Product = {
+            ...productData,
+            id: Date.now(),
+            rating: 0,
+            reviewCount: 0,
+        };
+        setProducts(prev => [newProduct, ...prev]);
+    };
+
+    const updateProduct = (updatedProduct: Product) => {
+        setProducts(prev => prev.map(p => p.id === updatedProduct.id ? updatedProduct : p));
+    };
+
+    const deleteProduct = (productId: number) => {
+        setProducts(prev => prev.filter(p => p.id !== productId));
+    };
+
+
     const value = {
         page,
         pageData,
+        products,
         selectedProduct,
         cart,
         wishlist,
         orders,
+        users,
         isAuthenticated,
+        isAdminAuthenticated,
         user,
         navigateTo,
         selectProduct,
@@ -127,6 +172,12 @@ export const AppProvider: React.FC<{ children: ReactNode }> = ({ children }) => 
         placeOrder,
         login,
         logout,
+        adminLogin,
+        adminLogout,
+        updateOrderStatus,
+        addProduct,
+        updateProduct,
+        deleteProduct,
     };
 
     return <AppContext.Provider value={value}>{children}</AppContext.Provider>;
