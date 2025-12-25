@@ -55,9 +55,9 @@ const AdminDashboardPage: React.FC = () => {
                     <h2 className="text-lg font-bold text-gray-800 mb-4">Quick Actions</h2>
                     <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">
                         <button onClick={() => navigateTo('adminManageProducts')} className="bg-blue-500 text-white font-bold py-3 rounded-lg hover:bg-blue-600">Manage Products</button>
+                        <button onClick={() => navigateTo('adminManageBanners')} className="bg-indigo-500 text-white font-bold py-3 rounded-lg hover:bg-indigo-600">Manage Banners</button>
                         <button onClick={() => navigateTo('adminManageOrders')} className="bg-green-500 text-white font-bold py-3 rounded-lg hover:bg-green-600">Manage Orders</button>
                         <button onClick={() => navigateTo('adminManageUsers')} className="bg-yellow-500 text-white font-bold py-3 rounded-lg hover:bg-yellow-600">Manage Users</button>
-                        <button className="bg-gray-500 text-white font-bold py-3 rounded-lg hover:bg-gray-600 opacity-50 cursor-not-allowed">Settings</button>
                     </div>
                 </div>
             </main>

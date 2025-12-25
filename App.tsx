@@ -17,6 +17,7 @@ import AdminDashboardPage from './components/pages/AdminDashboardPage';
 import AdminManageProductsPage from './components/pages/AdminManageProductsPage';
 import AdminManageOrdersPage from './components/pages/AdminManageOrdersPage';
 import AdminManageUsersPage from './components/pages/AdminManageUsersPage';
+import AdminManageBannersPage from './components/pages/AdminManageBannersPage';
 
 const PageRenderer: React.FC = () => {
     const { page, pageData } = useApp();
@@ -54,6 +55,8 @@ const PageRenderer: React.FC = () => {
             return <AdminManageOrdersPage />;
         case 'adminManageUsers':
             return <AdminManageUsersPage />;
+        case 'adminManageBanners':
+            return <AdminManageBannersPage />;
         default:
             return <HomePage />;
     }

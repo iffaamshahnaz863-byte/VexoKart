@@ -19,6 +19,13 @@ export interface Category {
   image: string;
 }
 
+export interface Banner {
+  id: number;
+  image: string;
+  title: string;
+  subtitle: string;
+}
+
 export interface CartItem {
   id: string; // Unique identifier for product-size combination, e.g., "123-M"
   product: Product;
@@ -40,12 +47,13 @@ export interface User {
     email: string;
 }
 
-export type Page = 'home' | 'productList' | 'productDetail' | 'cart' | 'profile' | 'checkout' | 'orderConfirmation' | 'wishlist' | 'orderHistory' | 'login' | 'signup' | 'adminLogin' | 'adminDashboard' | 'adminManageProducts' | 'adminManageOrders' | 'adminManageUsers';
+export type Page = 'home' | 'productList' | 'productDetail' | 'cart' | 'profile' | 'checkout' | 'orderConfirmation' | 'wishlist' | 'orderHistory' | 'login' | 'signup' | 'adminLogin' | 'adminDashboard' | 'adminManageProducts' | 'adminManageOrders' | 'adminManageUsers' | 'adminManageBanners';
 
 export interface AppContextType {
   page: Page;
   pageData: any;
   products: Product[];
+  banners: Banner[];
   selectedProduct: Product | null;
   cart: CartItem[];
   wishlist: Product[];
@@ -71,4 +79,6 @@ export interface AppContextType {
   addProduct: (product: Omit<Product, 'id' | 'rating' | 'reviewCount'>) => void;
   updateProduct: (product: Product) => void;
   deleteProduct: (productId: number) => void;
+  addBanner: (banner: Omit<Banner, 'id'>) => void;
+  deleteBanner: (bannerId: number) => void;
 }

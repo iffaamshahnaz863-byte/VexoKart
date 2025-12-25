@@ -1,15 +1,25 @@
 
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { useApp } from '../../context/AppContext';
-import { categories, banners } from '../../data';
+import { categories } from '../../data';
 import Header from '../layout/Header';
 import BottomNav from '../layout/BottomNav';
 import ProductCard from '../ui/ProductCard';
 import { SearchIcon } from '../../assets/icons';
 
 const HomePage: React.FC = () => {
-    const { navigateTo, products } = useApp();
+    const { navigateTo, products, banners } = useApp();
     const featuredProducts = products.slice(0, 4);
+    const [currentBanner, setCurrentBanner] = useState(0);
+
+    useEffect(() => {
+        if (banners.length > 1) {
+            const timer = setInterval(() => {
+                setCurrentBanner(prev => (prev + 1) % banners.length);
+            }, 5000); // Change banner every 5 seconds
+            return () => clearInterval(timer);
+        }
+    }, [banners.length]);
 
     return (
         <div className="pb-20">
@@ -23,10 +33,34 @@ const HomePage: React.FC = () => {
                     </div>
                 </div>
 
-                {/* Banner */}
-                <div className="rounded-lg overflow-hidden shadow-lg mb-6">
-                    <img src={banners[0].image} alt={banners[0].title} className="w-full" />
-                </div>
+                {/* Banner Carousel */}
+                {banners.length > 0 && (
+                    <div className="relative rounded-lg overflow-hidden shadow-lg mb-6 w-full h-48">
+                        {banners.map((banner, index) => (
+                             <div key={banner.id} className={`absolute inset-0 transition-opacity duration-1000 ${index === currentBanner ? 'opacity-100' : 'opacity-0'}`}>
+                                <img src={banner.image} alt={banner.title} className="w-full h-full object-cover" />
+                                <div className="absolute inset-0 bg-black bg-opacity-40 flex flex-col justify-end p-4 text-white">
+                                    <h2 className="text-xl font-bold">{banner.title}</h2>
+                                    <p className="text-sm">{banner.subtitle}</p>
+                                </div>
+                            </div>
+                        ))}
+                       
+                        {banners.length > 1 && (
+                             <div className="absolute bottom-2 left-1/2 -translate-x-1/2 flex space-x-2">
+                                {banners.map((_, index) => (
+                                    <button
+                                        key={index}
+                                        onClick={() => setCurrentBanner(index)}
+                                        className={`h-2 w-2 rounded-full transition-colors ${currentBanner === index ? 'bg-white' : 'bg-white/50'}`}
+                                        aria-label={`Go to slide ${index + 1}`}
+                                    />
+                                ))}
+                            </div>
+                        )}
+                    </div>
+                )}
+
 
                 {/* Categories */}
                 <section className="mb-6">

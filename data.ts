@@ -11,8 +11,3 @@ export const categories: Category[] = [
 ];
 
 export const products: Product[] = [];
-
-export const banners = [
-    { id: 1, image: 'https://picsum.photos/id/12/1200/400', title: 'Big Holiday Sale!', subtitle: 'Up to 50% off on electronics' },
-    { id: 2, image: 'https://picsum.photos/id/15/1200/400', title: 'New Fashion Arrivals', subtitle: 'Discover the latest trends' },
-];

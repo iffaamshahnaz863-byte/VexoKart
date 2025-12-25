@@ -1,6 +1,6 @@
 
 import React, { createContext, useContext, useState, useCallback, ReactNode } from 'react';
-import type { AppContextType, Page, Product, CartItem, Order, User } from '../types';
+import type { AppContextType, Page, Product, CartItem, Order, User, Banner } from '../types';
 import { products as mockProducts } from '../data';
 
 const AppContext = createContext<AppContextType | undefined>(undefined);
@@ -9,6 +9,7 @@ export const AppProvider: React.FC<{ children: ReactNode }> = ({ children }) => 
     const [page, setPage] = useState<Page>('home');
     const [pageData, setPageData] = useState<any>(null);
     const [products, setProducts] = useState<Product[]>(mockProducts);
+    const [banners, setBanners] = useState<Banner[]>([]);
     const [selectedProduct, setSelectedProduct] = useState<Product | null>(null);
     const [cart, setCart] = useState<CartItem[]>([]);
     const [wishlist, setWishlist] = useState<Product[]>([]);
@@ -149,11 +150,23 @@ export const AppProvider: React.FC<{ children: ReactNode }> = ({ children }) => 
         setProducts(prev => prev.filter(p => p.id !== productId));
     };
 
+    const addBanner = (bannerData: Omit<Banner, 'id'>) => {
+        const newBanner: Banner = {
+            ...bannerData,
+            id: Date.now(),
+        };
+        setBanners(prev => [newBanner, ...prev]);
+    };
+
+    const deleteBanner = (bannerId: number) => {
+        setBanners(prev => prev.filter(b => b.id !== bannerId));
+    };
 
     const value = {
         page,
         pageData,
         products,
+        banners,
         selectedProduct,
         cart,
         wishlist,
@@ -179,6 +192,8 @@ export const AppProvider: React.FC<{ children: ReactNode }> = ({ children }) => 
         addProduct,
         updateProduct,
         deleteProduct,
+        addBanner,
+        deleteBanner,
     };
 
     return <AppContext.Provider value={value}>{children}</AppContext.Provider>;
