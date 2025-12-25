@@ -1,23 +1,56 @@
 
-import React, { createContext, useContext, useState, useCallback, ReactNode } from 'react';
+import React, { createContext, useContext, useState, useCallback, ReactNode, useEffect } from 'react';
 import type { AppContextType, Page, Product, CartItem, Order, User, Banner } from '../types';
 import { products as mockProducts } from '../data';
 
 const AppContext = createContext<AppContextType | undefined>(undefined);
 
+// Helper to get initial state from localStorage or return a default
+const getInitialState = <T,>(key: string, defaultValue: T): T => {
+    try {
+        const storedValue = localStorage.getItem(key);
+        if (storedValue) {
+            return JSON.parse(storedValue);
+        }
+    } catch (error) {
+        console.error(`Error reading localStorage key "${key}":`, error);
+    }
+    return defaultValue;
+};
+
+
 export const AppProvider: React.FC<{ children: ReactNode }> = ({ children }) => {
     const [page, setPage] = useState<Page>('home');
     const [pageData, setPageData] = useState<any>(null);
-    const [products, setProducts] = useState<Product[]>(mockProducts);
-    const [banners, setBanners] = useState<Banner[]>([]);
+
+    const [products, setProducts] = useState<Product[]>(() => {
+        const storedProducts = getInitialState<Product[]>('vexokart_products', []);
+        // If no products are stored, or the stored list is empty, default to mockProducts.
+        // This makes the sample products reappear if the admin clears all products.
+        if (!storedProducts || storedProducts.length === 0) {
+            return mockProducts;
+        }
+        return storedProducts;
+    });
+    const [banners, setBanners] = useState<Banner[]>(() => getInitialState('vexokart_banners', []));
     const [selectedProduct, setSelectedProduct] = useState<Product | null>(null);
-    const [cart, setCart] = useState<CartItem[]>([]);
-    const [wishlist, setWishlist] = useState<Product[]>([]);
-    const [orders, setOrders] = useState<Order[]>([]);
-    const [isAuthenticated, setIsAuthenticated] = useState(false);
-    const [isAdminAuthenticated, setIsAdminAuthenticated] = useState(false);
-    const [user, setUser] = useState<User | null>(null);
-    const [users, setUsers] = useState<User[]>([]);
+    const [cart, setCart] = useState<CartItem[]>(() => getInitialState('vexokart_cart', []));
+    const [wishlist, setWishlist] = useState<Product[]>(() => getInitialState('vexokart_wishlist', []));
+    const [orders, setOrders] = useState<Order[]>(() => getInitialState('vexokart_orders', []));
+    const [isAuthenticated, setIsAuthenticated] = useState<boolean>(() => getInitialState('vexokart_isAuthenticated', false));
+    const [isAdminAuthenticated, setIsAdminAuthenticated] = useState<boolean>(() => getInitialState('vexokart_isAdminAuthenticated', false));
+    const [user, setUser] = useState<User | null>(() => getInitialState('vexokart_user', null));
+    const [users, setUsers] = useState<User[]>(() => getInitialState('vexokart_users', []));
+
+    useEffect(() => { localStorage.setItem('vexokart_products', JSON.stringify(products)); }, [products]);
+    useEffect(() => { localStorage.setItem('vexokart_banners', JSON.stringify(banners)); }, [banners]);
+    useEffect(() => { localStorage.setItem('vexokart_cart', JSON.stringify(cart)); }, [cart]);
+    useEffect(() => { localStorage.setItem('vexokart_wishlist', JSON.stringify(wishlist)); }, [wishlist]);
+    useEffect(() => { localStorage.setItem('vexokart_orders', JSON.stringify(orders)); }, [orders]);
+    useEffect(() => { localStorage.setItem('vexokart_isAuthenticated', JSON.stringify(isAuthenticated)); }, [isAuthenticated]);
+    useEffect(() => { localStorage.setItem('vexokart_isAdminAuthenticated', JSON.stringify(isAdminAuthenticated)); }, [isAdminAuthenticated]);
+    useEffect(() => { localStorage.setItem('vexokart_user', JSON.stringify(user)); }, [user]);
+    useEffect(() => { localStorage.setItem('vexokart_users', JSON.stringify(users)); }, [users]);
 
     const navigateTo = useCallback((newPage: Page, data?: any) => {
         setPage(newPage);
@@ -38,7 +71,6 @@ export const AppProvider: React.FC<{ children: ReactNode }> = ({ children }) => 
         setIsAuthenticated(false);
         setCart([]);
         setWishlist([]);
-        // Keep orders and users
         navigateTo('home');
     };
 

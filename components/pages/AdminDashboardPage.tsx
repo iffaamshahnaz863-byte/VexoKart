@@ -25,6 +25,13 @@ const AdminDashboardPage: React.FC = () => {
         }
     }, [isAdminAuthenticated, navigateTo]);
 
+    const handleResetData = () => {
+        if (window.confirm('Are you sure you want to reset all application data? This will delete all products, orders, banners, and users and restore the application to its initial state. This action cannot be undone.')) {
+            localStorage.clear();
+            window.location.reload();
+        }
+    };
+
     if (!isAdminAuthenticated) {
         return <div className="min-h-screen flex items-center justify-center">Redirecting...</div>;
     }
@@ -58,6 +65,22 @@ const AdminDashboardPage: React.FC = () => {
                         <button onClick={() => navigateTo('adminManageBanners')} className="bg-indigo-500 text-white font-bold py-3 rounded-lg hover:bg-indigo-600">Manage Banners</button>
                         <button onClick={() => navigateTo('adminManageOrders')} className="bg-green-500 text-white font-bold py-3 rounded-lg hover:bg-green-600">Manage Orders</button>
                         <button onClick={() => navigateTo('adminManageUsers')} className="bg-yellow-500 text-white font-bold py-3 rounded-lg hover:bg-yellow-600">Manage Users</button>
+                    </div>
+                </div>
+
+                <div className="bg-white rounded-lg shadow p-5 mt-6">
+                    <h2 className="text-lg font-bold text-gray-800 mb-4">Danger Zone</h2>
+                    <div className="flex items-center justify-between p-4 bg-red-50 border-l-4 border-red-400 rounded">
+                        <div>
+                            <p className="font-bold text-red-800">Reset Application Data</p>
+                            <p className="text-sm text-red-700 mt-1">This will permanently delete all data and restore the default sample data.</p>
+                        </div>
+                        <button 
+                            onClick={handleResetData}
+                            className="bg-red-500 text-white font-bold py-2 px-4 rounded-lg hover:bg-red-600 ml-4 flex-shrink-0"
+                        >
+                            Reset Data
+                        </button>
                     </div>
                 </div>
             </main>
