@@ -1,7 +1,6 @@
 
 import React from 'react';
 import { useApp } from '../../context/AppContext';
-import { products } from '../../data';
 import type { Category } from '../../types';
 import BottomNav from '../layout/BottomNav';
 import ProductCard from '../ui/ProductCard';
@@ -12,7 +11,7 @@ interface ProductListPageProps {
 }
 
 const ProductListPage: React.FC<ProductListPageProps> = ({ category }) => {
-    const { navigateTo } = useApp();
+    const { navigateTo, products } = useApp();
     const filteredProducts = category ? products.filter(p => p.category === category.name) : products;
 
     return (
@@ -26,11 +25,18 @@ const ProductListPage: React.FC<ProductListPageProps> = ({ category }) => {
                 </div>
             </header>
             <main className="container mx-auto p-4">
-                <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-4">
-                    {filteredProducts.map(product => (
-                        <ProductCard key={product.id} product={product} />
-                    ))}
-                </div>
+                {filteredProducts.length > 0 ? (
+                    <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-4">
+                        {filteredProducts.map(product => (
+                            <ProductCard key={product.id} product={product} />
+                        ))}
+                    </div>
+                ) : (
+                     <div className="text-center py-20">
+                        <p className="text-gray-600 text-lg">No products found.</p>
+                        <p className="text-sm text-gray-500 mt-1">Check back later or explore other categories.</p>
+                    </div>
+                )}
             </main>
             <BottomNav />
         </div>

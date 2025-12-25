@@ -1,7 +1,6 @@
 
 import React, { useEffect } from 'react';
 import { useApp } from '../../context/AppContext';
-import { products } from '../../data';
 
 const StatCard: React.FC<{ title: string; value: string; icon: string }> = ({ title, value, icon }) => (
     <div className="bg-white rounded-lg shadow p-5">

@@ -10,6 +10,7 @@ export interface Product {
   category: string;
   images: string[];
   stock: number;
+  sizes?: string[];
 }
 
 export interface Category {
@@ -19,8 +20,10 @@ export interface Category {
 }
 
 export interface CartItem {
+  id: string; // Unique identifier for product-size combination, e.g., "123-M"
   product: Product;
   quantity: number;
+  selectedSize?: string;
 }
 
 export interface Order {
@@ -53,9 +56,9 @@ export interface AppContextType {
   user: User | null;
   navigateTo: (page: Page, data?: any) => void;
   selectProduct: (product: Product) => void;
-  addToCart: (product: Product, quantity?: number) => void;
-  removeFromCart: (productId: number) => void;
-  updateCartQuantity: (productId: number, quantity: number) => void;
+  addToCart: (product: Product, quantity?: number, size?: string) => void;
+  removeFromCart: (cartId: string) => void;
+  updateCartQuantity: (cartId: string, quantity: number) => void;
   addToWishlist: (product: Product) => void;
   removeFromWishlist: (productId: number) => void;
   isProductInWishlist: (productId: number) => boolean;

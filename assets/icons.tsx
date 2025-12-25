@@ -32,7 +32,13 @@ export const HeartIcon = ({ filled = false, className = "w-6 h-6" }) => (
     </svg>
 );
 
-export const StarIcon = ({ filled = false, half = false }) => {
+// FIX: Explicitly type StarIcon as a React.FC to ensure TypeScript correctly handles React-specific props like `key`.
+interface StarIconProps {
+    filled?: boolean;
+    half?: boolean;
+}
+
+export const StarIcon: React.FC<StarIconProps> = ({ filled = false, half = false }) => {
     const id = `grad-${Math.random()}`;
     return (
     <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill={filled ? "currentColor" : (half ? `url(#${id})` : "none")} className="w-5 h-5 text-yellow-400" stroke="currentColor" strokeWidth={0.5}>
@@ -86,4 +92,3 @@ export const CheckCircleIcon = () => (
         <path strokeLinecap="round" strokeLinejoin="round" d="M9 12.75 11.25 15 15 9.75M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z" />
     </svg>
 );
-

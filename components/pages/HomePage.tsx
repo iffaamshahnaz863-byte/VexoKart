@@ -1,14 +1,14 @@
 
 import React from 'react';
 import { useApp } from '../../context/AppContext';
-import { products, categories, banners } from '../../data';
+import { categories, banners } from '../../data';
 import Header from '../layout/Header';
 import BottomNav from '../layout/BottomNav';
 import ProductCard from '../ui/ProductCard';
 import { SearchIcon } from '../../assets/icons';
 
 const HomePage: React.FC = () => {
-    const { navigateTo } = useApp();
+    const { navigateTo, products } = useApp();
     const featuredProducts = products.slice(0, 4);
 
     return (
@@ -44,11 +44,18 @@ const HomePage: React.FC = () => {
                 {/* Featured Products */}
                 <section>
                     <h2 className="text-xl font-bold text-gray-800 mb-3">Featured Products</h2>
-                    <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-4">
-                        {featuredProducts.map(product => (
-                            <ProductCard key={product.id} product={product} />
-                        ))}
-                    </div>
+                    {featuredProducts.length > 0 ? (
+                        <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-4">
+                            {featuredProducts.map(product => (
+                                <ProductCard key={product.id} product={product} />
+                            ))}
+                        </div>
+                    ) : (
+                        <div className="text-center py-10 bg-gray-100 rounded-lg">
+                            <p className="text-gray-600">No products available yet.</p>
+                            <p className="text-sm text-gray-500 mt-1">The administrator can add products from the admin panel.</p>
+                        </div>
+                    )}
                 </section>
             </main>
             <BottomNav />

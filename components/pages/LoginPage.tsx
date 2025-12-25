@@ -5,8 +5,8 @@ import { ArrowLeftIcon } from '../../assets/icons';
 
 const LoginPage: React.FC = () => {
     const { navigateTo, login } = useApp();
-    const [email, setEmail] = useState('john.doe@example.com');
-    const [password, setPassword] = useState('password123');
+    const [email, setEmail] = useState('');
+    const [password, setPassword] = useState('');
 
     const handleLogin = (e: React.FormEvent) => {
         e.preventDefault();
@@ -64,6 +64,11 @@ const LoginPage: React.FC = () => {
                             Sign up
                         </button>
                     </p>
+                    <div className="text-center border-t pt-4">
+                        <button onClick={() => navigateTo('adminLogin')} className="text-sm font-medium text-gray-700 hover:text-purple-600">
+                            Login as Administrator
+                        </button>
+                    </div>
                 </div>
             </div>
         </div>

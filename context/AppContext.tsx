@@ -60,31 +60,32 @@ export const AppProvider: React.FC<{ children: ReactNode }> = ({ children }) => 
         navigateTo('productDetail');
     };
 
-    const addToCart = (product: Product, quantity: number = 1) => {
+    const addToCart = (product: Product, quantity: number = 1, size?: string) => {
+        const cartId = `${product.id}-${size || 'default'}`;
         setCart(prevCart => {
-            const existingItem = prevCart.find(item => item.product.id === product.id);
+            const existingItem = prevCart.find(item => item.id === cartId);
             if (existingItem) {
                 return prevCart.map(item =>
-                    item.product.id === product.id
+                    item.id === cartId
                         ? { ...item, quantity: item.quantity + quantity }
                         : item
                 );
             }
-            return [...prevCart, { product, quantity }];
+            return [...prevCart, { id: cartId, product, quantity, selectedSize: size }];
         });
     };
 
-    const removeFromCart = (productId: number) => {
-        setCart(prevCart => prevCart.filter(item => item.product.id !== productId));
+    const removeFromCart = (cartId: string) => {
+        setCart(prevCart => prevCart.filter(item => item.id !== cartId));
     };
 
-    const updateCartQuantity = (productId: number, quantity: number) => {
+    const updateCartQuantity = (cartId: string, quantity: number) => {
         if (quantity <= 0) {
-            removeFromCart(productId);
+            removeFromCart(cartId);
         } else {
             setCart(prevCart =>
                 prevCart.map(item =>
-                    item.product.id === productId ? { ...item, quantity } : item
+                    item.id === cartId ? { ...item, quantity } : item
                 )
             );
         }

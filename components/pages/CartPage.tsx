@@ -42,18 +42,19 @@ const CartPage: React.FC = () => {
                     <>
                         <div className="space-y-4">
                             {cart.map(item => (
-                                <div key={item.product.id} className="bg-white rounded-lg shadow p-4 flex items-center space-x-4">
+                                <div key={item.id} className="bg-white rounded-lg shadow p-4 flex items-center space-x-4">
                                     <img src={item.product.images[0]} alt={item.product.name} className="w-20 h-20 object-cover rounded-md"/>
                                     <div className="flex-1">
                                         <h3 className="text-sm font-semibold text-gray-800">{item.product.name}</h3>
+                                        {item.selectedSize && <p className="text-xs text-gray-500">Size: {item.selectedSize}</p>}
                                         <p className="text-lg font-bold text-gray-900 mt-1">₹{item.product.price.toFixed(2)}</p>
                                         <div className="flex items-center mt-2">
                                             <div className="flex items-center border border-gray-300 rounded-md">
-                                                <button onClick={() => updateCartQuantity(item.product.id, item.quantity - 1)} className="p-1.5"><MinusIcon /></button>
+                                                <button onClick={() => updateCartQuantity(item.id, item.quantity - 1)} className="p-1.5"><MinusIcon /></button>
                                                 <span className="px-3 text-sm font-semibold">{item.quantity}</span>
-                                                <button onClick={() => updateCartQuantity(item.product.id, item.quantity + 1)} className="p-1.5"><PlusIcon /></button>
+                                                <button onClick={() => updateCartQuantity(item.id, item.quantity + 1)} className="p-1.5"><PlusIcon /></button>
                                             </div>
-                                            <button onClick={() => removeFromCart(item.product.id)} className="ml-auto text-gray-500 hover:text-red-500">
+                                            <button onClick={() => removeFromCart(item.id)} className="ml-auto text-gray-500 hover:text-red-500">
                                                 <TrashIcon />
                                             </button>
                                         </div>

@@ -8,6 +8,8 @@ const ProductDetailPage: React.FC = () => {
     const { selectedProduct, navigateTo, addToCart, addToWishlist, isProductInWishlist, isAuthenticated } = useApp();
     const [mainImage, setMainImage] = useState(selectedProduct?.images[0] || '');
     const [addedToCart, setAddedToCart] = useState(false);
+    const [selectedSize, setSelectedSize] = useState<string | null>(null);
+    const [sizeError, setSizeError] = useState(false);
 
     if (!selectedProduct) {
         return (
@@ -16,15 +18,22 @@ const ProductDetailPage: React.FC = () => {
             </div>
         );
     }
+    
+    const hasSizes = selectedProduct.sizes && selectedProduct.sizes.length > 0 && selectedProduct.sizes[0] !== "";
+
 
     const handleAddToCart = () => {
         if (!isAuthenticated) {
             navigateTo('login');
             return;
         }
-        addToCart(selectedProduct);
+        if (hasSizes && !selectedSize) {
+            setSizeError(true);
+            return;
+        }
+        addToCart(selectedProduct, 1, selectedSize || undefined);
         setAddedToCart(true);
-        setTimeout(() => setAddedToCart(false), 2000); // Hide message after 2s
+        setTimeout(() => setAddedToCart(false), 2000);
     };
 
     const handleBuyNow = () => {
@@ -32,9 +41,18 @@ const ProductDetailPage: React.FC = () => {
             navigateTo('login');
             return;
         }
-        addToCart(selectedProduct);
+        if (hasSizes && !selectedSize) {
+            setSizeError(true);
+            return;
+        }
+        addToCart(selectedProduct, 1, selectedSize || undefined);
         navigateTo('checkout');
     };
+
+    const handleSizeSelect = (size: string) => {
+        setSelectedSize(size);
+        setSizeError(false);
+    }
 
     const discount = Math.round(((selectedProduct.originalPrice - selectedProduct.price) / selectedProduct.originalPrice) * 100);
 
@@ -80,6 +98,24 @@ const ProductDetailPage: React.FC = () => {
                         {discount > 0 && <span className="text-base font-semibold text-green-600">{discount}% OFF</span>}
                     </div>
 
+                    {hasSizes && (
+                        <div className="mt-6">
+                            <h2 className="text-lg font-semibold text-gray-800 mb-2">Select Size</h2>
+                            <div className="flex flex-wrap gap-2">
+                                {selectedProduct.sizes?.map(size => (
+                                    <button
+                                        key={size}
+                                        onClick={() => handleSizeSelect(size)}
+                                        className={`px-4 py-2 border rounded-lg font-semibold ${selectedSize === size ? 'bg-purple-600 text-white border-purple-600' : 'bg-white text-gray-700 border-gray-300'}`}
+                                    >
+                                        {size}
+                                    </button>
+                                ))}
+                            </div>
+                            {sizeError && <p className="text-red-500 text-sm mt-2">Please select a size.</p>}
+                        </div>
+                    )}
+
                     <div className="mt-6 border-t pt-4">
                         <h2 className="text-lg font-semibold text-gray-800">Description</h2>
                         <p className="text-gray-600 mt-2 leading-relaxed">{selectedProduct.description}</p>
@@ -97,13 +133,15 @@ const ProductDetailPage: React.FC = () => {
                 <div className="flex space-x-3 max-w-lg mx-auto">
                     <button 
                         onClick={handleAddToCart}
-                        className="w-1/2 bg-gray-200 text-gray-800 font-bold py-3 rounded-lg hover:bg-gray-300 transition-colors"
+                        disabled={hasSizes && !selectedSize}
+                        className="w-1/2 bg-gray-200 text-gray-800 font-bold py-3 rounded-lg hover:bg-gray-300 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
                     >
                         Add to Cart
                     </button>
                     <button 
                         onClick={handleBuyNow}
-                        className="w-1/2 bg-gradient-to-r from-blue-500 to-purple-600 text-white font-bold py-3 rounded-lg shadow-lg hover:opacity-90 transition-opacity"
+                        disabled={hasSizes && !selectedSize}
+                        className="w-1/2 bg-gradient-to-r from-blue-500 to-purple-600 text-white font-bold py-3 rounded-lg shadow-lg hover:opacity-90 transition-opacity disabled:opacity-50 disabled:cursor-not-allowed"
                     >
                         Buy Now
                     </button>
